@@ -1,0 +1,565 @@
+CREATE DATABASE QLBH_22520859
+USE QLBH_22520859
+
+--PHAN I
+
+CREATE TABLE KHACHHANG(
+	MAKH CHAR(4) NOT NULL,
+	HOTEN VARCHAR(40),
+	DCHI VARCHAR(50),
+	SODT VARCHAR(20),
+	NGSINH SMALLDATETIME,
+	DOANHSO MONEY,
+	NGDK SMALLDATETIME,
+	CONSTRAINT Pk_kh PRIMARY KEY (MAKH), 
+);
+
+CREATE TABLE NHANVIEN(
+	MANV CHAR(4) NOT NULL,
+	HOTEN VARCHAR(40),
+	SODT VARCHAR(20),
+	NGVL SMALLDATETIME,
+	CONSTRAINT Pk_nv PRIMARY KEY (MANV),
+);
+
+CREATE TABLE SANPHAM(
+	MASP CHAR(4) NOT NULL,
+	TENSP VARCHAR(40),
+	DVT VARCHAR(20),
+	NUOCSX VARCHAR(40),
+	GIA MONEY,
+	CONSTRAINT Pk_sp PRIMARY KEY (MASP),
+);
+
+CREATE TABLE HOADON(
+	SOHD INT NOT NULL,
+	NGHD SMALLDATETIME,
+	MAKH CHAR(4),
+	MANV CHAR(4),
+	TRIGIA MONEY,
+	CONSTRAINT Pk_hd PRIMARY KEY (SOHD),
+	CONSTRAINT Fk_hdkh FOREIGN KEY (MAKH) REFERENCES KHACHHANG(MAKH),
+	CONSTRAINT Fk_hdnv FOREIGN KEY (MANV) REFERENCES NHANVIEN(MANV),
+);
+
+CREATE TABLE CTHD(
+	SOHD INT NOT NULL,
+	MASP CHAR(4) NOT NULL,
+	SL INT,
+	CONSTRAINT Pk_ct PRIMARY KEY (SOHD, MASP),
+	CONSTRAINT Fk_cthd FOREIGN KEY (SOHD) REFERENCES HOADON(SOHD),
+	CONSTRAINT Fk_ctsp FOREIGN KEY (MASP) REFERENCES SANPHAM(MASP),
+);
+
+ALTER TABLE SANPHAM
+ADD GHICHU VARCHAR(20);
+
+ALTER TABLE KHACHHANG
+ADD LOAIKH TINYINT;
+
+ALTER TABLE SANPHAM
+ALTER COLUMN GHICHU VARCHAR(100);
+
+ALTER TABLE SANPHAM
+DROP COLUMN GHICHU;
+
+ALTER TABLE KHACHHANG
+ALTER COLUMN LOAIKH VARCHAR(30); 
+
+ALTER TABLE SANPHAM
+ADD CONSTRAINT chk_lsp CHECK (DVT IN('cay', 'hop', 'cai', 'quyen', 'chuc'));
+
+ALTER TABLE SANPHAM
+ADD CONSTRAINT chk_gia CHECK (GIA >= 500);
+
+ALTER TABLE CTHD
+ADD CONSTRAINT chk_sl CHECK (SL >= 1);
+
+ALTER TABLE KHACHHANG
+ADD CONSTRAINT chk_ndk CHECK (NGSINH < NGDK);
+
+
+
+
+-- PHAN II
+-- nhap du leu cho cac quan he
+SET DATEFORMAT dmy
+	INSERT INTO KHACHHANG (MAKH, HOTEN, DCHI, SODT, NGSINH, DOANHSO, NGDK) VALUES ('KH01', 'Nguyen Van A', '731, Tran Hung Dao, Q5, TPHCM', '08823451', '22/10/1960', 13060000, '22/07/2006')
+	INSERT INTO KHACHHANG (MAKH, HOTEN, DCHI, SODT, NGSINH, DOANHSO, NGDK) VALUES ('KH02', 'Tran Ngoc Han', '23/5 Nguyen Trai, Q5, TpHCM', '0908256478', '03/04/1974', 280000, '30/07/2006')
+	INSERT INTO KHACHHANG (MAKH, HOTEN, DCHI, SODT, NGSINH, DOANHSO, NGDK) VALUES ('KH03', 'Tran Ngoc Linh', '45 Nguyen Canh Chan, Q1, TpHCM', '0938776266', '12/06/1980', 3860000, '05/08/2006')
+	INSERT INTO KHACHHANG (MAKH, HOTEN, DCHI, SODT, NGSINH, DOANHSO, NGDK) VALUES ('KH04', 'Tran Minh Long', '50/34 Le Dai hanh, Q10, TpHCM', '0917325476', '09/03/1965', 250000, '02/10/2006')
+	INSERT INTO KHACHHANG (MAKH, HOTEN, DCHI, SODT, NGSINH, DOANHSO, NGDK) VALUES ('KH05', 'Le Nhat Minh', '34 Truong Dinh, Q3, TPHCM', '08246108', '10/03/1960', 21000, '28/10/2006')
+	INSERT INTO KHACHHANG (MAKH, HOTEN, DCHI, SODT, NGSINH, DOANHSO, NGDK) VALUES ('KH06', 'Le Hoai Thuong', '227 Nguyen Van Cu, Q5, TpHCM', '08631738', '31/12/1981', 915000, '24/11/2006')
+	INSERT INTO KHACHHANG (MAKH, HOTEN, DCHI, SODT, NGSINH, DOANHSO, NGDK) VALUES ('KH07', 'Nguyen Van Tam', '32/3 Tran Binh Trong, Q5, TpHCM', '0916783565', '06/04/1971', 12500, '01/12/2006')
+	INSERT INTO KHACHHANG (MAKH, HOTEN, DCHI, SODT, NGSINH, DOANHSO, NGDK) VALUES ('KH08', 'Phan Thi Thanh', '45/2 An Duong Vuong, Q5, TPHCM', '0938435756', '10/01/1971', 365000, '13/12/2006')
+	INSERT INTO KHACHHANG (MAKH, HOTEN, DCHI, SODT, NGSINH, DOANHSO, NGDK) VALUES ('KH09', 'Le Ha Vinh', '873 Le Hong Phong, Q5, TPHCM', '08654763', '03/09/1979', 70000, '14/01/2007')
+	INSERT INTO KHACHHANG (MAKH, HOTEN, DCHI, SODT, NGSINH, DOANHSO, NGDK) VALUES ('KH10', 'Ha Duy Lap', '34/34B Nguyen Trai, Q1, TPHCM', '08768904', '02/05/1963', 67500, '16/01/2007')
+select * from KHACHHANG
+
+SET DATEFORMAT dmy
+	INSERT INTO NHANVIEN (MANV, HOTEN, SODT, NGVL) VALUES ('NV01', 'Nguyen Nhu Nhut', '0927345678', '13/4/2006')
+	INSERT INTO NHANVIEN (MANV, HOTEN, SODT, NGVL) VALUES ('NV02', 'Le Thi Phi Yen', '0987567390', '21/4/2006')
+	INSERT INTO NHANVIEN (MANV, HOTEN, SODT, NGVL) VALUES ('NV03', 'Nguyen Van B', '0997047382', '27/4/2006')
+	INSERT INTO NHANVIEN (MANV, HOTEN, SODT, NGVL) VALUES ('NV04', 'Ngo Thanh Tuan', '0913758498', '24/6/2006')
+	INSERT INTO NHANVIEN (MANV, HOTEN, SODT, NGVL) VALUES ('NV05', 'Nguyen Thi Truc Thanh', '0918590387', '20/7/2006')
+SELECT * FROM NHANVIEN
+
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('BC01', 'But Chi', 'cay', 'Singapore', 3000)
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('BC02', 'But Chi', 'cay', 'Singapore', 5000)
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('BC03', 'But Chi', 'cay', 'Viet Nam', 3500)
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('BC04', 'But Chi', 'hop', 'Viet Nam', 30000)
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('BB01', 'But bi', 'cay', 'Viet Nam', 5000)
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('BB02', 'But bi', 'cay', 'Trung Quoc', 7000)
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('BB03', 'But bi', 'hop', 'Thai Lan', 100000)
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('TV01', 'Tap 100 giay mong', 'quyen', 'Trung Quoc', 2500)
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('TV02', 'Tap 200 giay mong', 'quyen', 'Trung Quoc', 4500)
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('TV03', 'Tap 100 giay tot', 'quyen', 'Viet Nam', 3000)
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('TV04', 'Tap 200 giay tot', 'quyen', 'Viet Nam', 5500)
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('TV05', 'Tap 100 trang', 'chuc', 'Viet Nam', 23000)
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('TV06', 'Tap 200 trang', 'chuc', 'Viet Nam', 53000)
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('TV07', 'Tap 100 trang', 'chuc', 'Viet Nam', 34000)
+UPDATE SANPHAM
+SET NUOCSX = 'Trung Quoc'
+WHERE MASP = 'TV07'
+INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('ST01', 'So tay 500 trang', 'quyen', 'Viet Nam', 40000)
+UPDATE SANPHAM
+SET NUOCSX = 'Trung Quoc'
+WHERE MASP = 'ST01'
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('ST02', 'So tay loai 1', 'quyen', 'Viet Nam', 55000)
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('ST03', 'So tay loai 2', 'quyen', 'Viet Nam', 51000)
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('ST04', 'So tay', 'quyen', 'Thai Lan', 55000)
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('ST05', 'So tay mong', 'quyen', 'Thai Lan', 20000)
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('ST06', 'Phan viet bang', 'hop', 'Viet Nam', 5000)
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('ST07', 'Phan khong bui', 'hop', 'Viet Nam', 5000)
+UPDATE SANPHAM
+SET GIA = 7000
+WHERE MASP = 'ST07'
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('ST08', 'Bong bang', 'cai', 'Viet Nam', 1000)
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('ST09', 'But long', 'cay', 'Viet Nam', 5000)
+	INSERT INTO SANPHAM (MASP, TENSP, DVT, NUOCSX, GIA) VALUES ('ST10', 'But long', 'cay', 'Trung Quoc', 7000)
+SELECT * FROM SANPHAM
+
+SET DATEFORMAT dmy
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1001, '23/07/2006', 'KH01', 'NV01', 320000)
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1002, '12/08/2006', 'KH01', 'NV02', 840000)
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1003, '23/06/2006', 'KH02', 'NV01', 100000)
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1004, '01/09/2006', 'KH02', 'NV01', 180000)
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1005, '20/10/2006', 'KH01', 'NV02', 3800000)
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1006, '16/10/2006', 'KH01', 'NV03', 2430000)
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1007, '28/10/2006', 'KH03', 'NV03', 510000)
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1008, '28/10/2006', 'KH01', 'NV03', 440000)
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1009, '28/10/2006', 'KH03', 'NV04', 200000)
+UPDATE HOADON
+SET TRIGIA = 200000
+WHERE SOHD = 1009
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1010, '01/11/2006', 'KH01', 'NV01', 5200000)
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1011, '04/11/2006', 'KH04', 'NV03', 250000)
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1012, '30/11/2006', 'KH05', 'NV03', 21000)
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1013, '12/12/2006', 'KH06', 'NV01', 5000)
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1014, '31/12/2006', 'KH03', 'NV02', 3150000)
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1015, '01/01/2007', 'KH06', 'NV01', 910000)
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1016, '01/01/2007', 'KH07', 'NV02', 12500)
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1017, '02/01/2007', 'KH08', 'NV03', 35000)
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1018, '13/01/2007', 'KH08', 'NV03', 330000)
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1019, '13/01/2007', 'KH01', 'NV03', 30000)
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1020, '14/01/2007', 'KH09', 'NV04', 70000)
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1021, '16/01/2007', 'KH10', 'NV04', 67500)
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1022, '16/01/2007', Null, 'NV03', 7000)
+	INSERT INTO HOADON (SOHD, NGHD, MAKH, MANV, TRIGIA) VALUES (1023, '17/01/2007', Null, 'NV01', 330000)
+SELECT * FROM HOADON
+
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1001, 'TV02', 10)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1001, 'ST01', 5)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1001, 'BC01', 5)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1001, 'BC02', 10)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1001, 'ST08', 10)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1002, 'BC04', 20)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1002, 'BB01', 20)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1002, 'BB02', 20)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1003, 'BB03', 10)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1004, 'TV01', 20)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1004, 'TV02', 10)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1004, 'TV03', 10)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1004, 'TV04', 10)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1005, 'TV05', 50)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1005, 'TV06', 50)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1001, 'TV07', 20)
+UPDATE CTHD
+SET SOHD = 1006
+WHERE MASP = 'TV07' and SL = 20
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1006, 'ST01', 30)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1006, 'ST02', 10)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1007, 'ST03', 10)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1008, 'ST04', 8)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1009, 'ST05', 10)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1010, 'TV07', 50)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1010, 'ST07', 50)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1010, 'ST08', 100)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1010, 'ST04', 50)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1010, 'TV03', 100)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1011, 'ST06', 50)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1012, 'ST07', 3)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1013, 'ST08', 5)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1014, 'BC02', 80)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1014, 'BB02', 100)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1014, 'BC04', 60)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1014, 'BB01', 50)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1015, 'BB02', 30)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1015, 'BB03', 7)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1016, 'TV01', 5)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1017, 'TV02', 1)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1017, 'TV03', 1)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1017, 'TV04', 5)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1018, 'ST04', 6)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1019, 'ST05', 1)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1019, 'ST06', 2)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1020, 'ST07', 10)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1021, 'ST08', 5)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1021, 'TV01', 7)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1021, 'TV02', 10)
+	INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1022, 'TV02', 10)
+UPDATE CTHD
+SET MASP = 'ST07'
+WHERE SOHD = 1022 and SL = 10
+UPDATE CTHD
+SET SL = 1
+WHERE SOHD = 1022 and MASP = 'ST07'
+INSERT INTO CTHD (SOHD, MASP, SL) VALUES (1023, 'ST04', 6)
+	SELECT * FROM CTHD
+
+	-- tao quan he SANPHAM1 chua toan bo du lieu cua quan he SANPHAM . Tao quan he KHACHHANG chua toan bo du lieu cua quan he KHACHHANG
+	SELECT *
+	INTO SANPHAM1
+	FROM SANPHAM
+
+	SELECT *
+	INTO KHACHHANG1
+	FROM KHACHHANG
+
+	-- cap nhat gia tang 5% doi voi nhung san pham do Thai Lan san xuat cho quan he SANPHAM1
+	UPDATE SANPHAM1
+	SET GIA = GIA * 1.05
+	WHERE NUOCSX = 'Thai Lan' 
+	SELECT * FROM SANPHAM
+	SELECT * FROM SANPHAM1
+
+	-- Cap nhat gia giam 5% doi voi nhung san pham do Trung Quoc san xuat co gia tu 10.000 tro xuong cho quan he SANPHAM1
+	UPDATE SANPHAM1
+	SET GIA = GIA * 0.95
+	WHERE NUOCSX = 'Trung Quoc' and GIA <= 10000 
+	SELECT * FROM SANPHAM
+	SELECT * FROM SANPHAM1
+
+	-- cap nhat LOAIKH la 'Vip' doi voi khach hang dang ky thanh vien truoc ngay 1/1/2007 co doanh so tu 10.000.000 tro len hoac khach hang dang ki thanh vien tu 1/1/2007 tro ve sau co doanh so tu 2.000.000 tro len cho quan he KHACHHANG1
+	UPDATE KHACHHANG1
+	SET LOAIKH = 'Vip'
+	WHERE (NGDK < '1/1/2007' and DOANHSO >= 10000000) or (NGDK >='1/1/2007' and DOANHSO >= 2000000)
+	SELECT * FROM KHACHHANG
+	SELECT * FROM KHACHHANG1
+
+	-- PHAN III
+	-- in ra danh sach cac san pham (maso, tensp) do 'Trung Quoc san xuat
+	SELECT MASP, TENSP
+	FROM SANPHAM
+	WHERE NUOCSX = 'Trung Quoc'
+
+	-- in ra danh sach cac san pham (masp, tensp) co don vi tinh la 'cay', 'quyen'
+	SELECT MASP, TENSP
+	FROM SANPHAM
+	WHERE DVT in ('cay', 'quyen')
+
+	-- in ra danh sach cac san pham (masp, tensp) co ma san pham bat dau tu 'B' va ket thuc la '01'
+	SELECT MASP, TENSP 
+	FROM SANPHAM
+	WHERE MASP like 'B%01'
+
+	-- in ra dnh sach cac san pham (masp, tensp) do 'Trung Quoc'  san xuat co gia tu 30000 den 40000
+	SELECT MASP, TENSP
+	FROM SANPHAM
+	WHERE NUOCSX = 'Trung Quoc' and GIA >= 30000 and GIA <= 40000
+
+	-- in ra danh sach cac san pham (masp, tensp) do 'Trung Quoc' hoac 'Thai Lan' san xuat  co gia tu 30000 den 40000
+	SELECT MASP, TENSP
+	FROM SANPHAM
+	WHERE NUOCSX in ('Trung Quoc', 'Thai Lan') and GIA >= 30000 and GIA <= 40000
+
+	-- in ra cac so hoa don va tri gia hoa don ban a trong ngay '1/1/2007' va '2/1/2007'
+	SET DATEFORMAT dmy
+	SELECT SOHD, TRIGIA
+	FROM HOADON
+	WHERE NGHD  = '1/1/2007' or NGHD  ='02/01/2007'
+
+	-- in ra cac so hoa don, tri gia hoa don trong thang '1/2007' va sap xep tang dan theo ngay va co gia tri tri gia giam dan
+	SELECT SOHD, TRIGIA
+	FROM HOADON
+	WHERE MONTH(NGHD)= 1 and YEAR(NGHD) = 2007
+	ORDER BY DAY(NGHD) asc , TRIGIA desc
+
+	-- in ra danh sach khach hang (MAKH, HOTEN) da mua hang trong ngay '1/1/2007'
+	SELECT kh.MAKH, HOTEN
+	FROM KHACHHANG kh join HOADON hd on kh.MAKH = hd.MAKH
+	WHERE NGHD = '1/1/2007'
+
+	-- in ra SOHD, TRIGIA do nhan vien co ten 'Nguyen Van B' lap trong ngay '28/10/2006'
+	SELECT SOHD, TRIGIA
+	FROM HOADON hd join NHANVIEN nv on hd.MANV = nv.MANV
+	WHERE HOTEN = 'Nguyen Van B' and NGHD = '28/10/2006'
+
+	-- in ra danh sach MASP, TENSP duoc khach hang co ten 'Nguyen Van A' mua trong thang 10 nam 2006
+	SELECT sp.MASP, TENSP
+	FROM SANPHAM sp join CTHD on CTHD.MASP = sp.MASP join HOADON hd on hd.SOHD = CTHD.SOHD join KHACHHANG kh on kh.MAKH = hd.MAKH
+	WHERE HOTEN = 'Nguyen Van A' and MONTH(NGHD) = 10 and YEAR(NGHD) = 2006
+
+	-- tim SOHD da mua san pham co MASP la 'BB01' hoac 'BB02'
+	SELECT DISTINCT SOHD
+	FROM CTHD
+	WHERE MASP  in ('BB01', 'BB02')
+
+	-- tim SOHD da mua san pham co MASP la 'BB01' hoac 'BB02' va moi san pham co SL tu 10 den 20
+	SELECT DISTINCT SOHD
+	FROM CTHD
+	WHERE MASP  in ('BB01', 'BB02') and SL between 10 and 20
+
+
+
+	-- tim SOHD da mua san pham co MASP la 'BB01' hoac 'BB02' va moi san pham co SL tu 10 den 20
+	SELECT DISTINCT SOHD
+	FROM CTHD
+	WHERE SL between 10 and 20 and MASP = 'BB01' and SOHD in (SELECT SOHD
+															FROM CTHD
+															WHERE MASP ='BB02'
+															)
+
+	-- in ra danh sach (MASP, TENSP) do 'Trung Quoc' san xuat hoac cac san pham duoc ban ra trong ngy '1/1/2007'
+	SELECT DISTINCT sp.MASP, TENSP
+	FROM SANPHAM sp					-- in : masp in ( select masp from where ...)
+	WHERE NUOCSX = 'Trung Quoc' or exists ( SELECT *
+											FROM CTHD join HOADON hd on hd.SOHD = CTHD.SOHD
+											WHERE  NGHD = '1/1/2007' and sp.MASP = CTHD.MASP
+											)
+
+
+	-- in ra danh sach (MASP, TENSP) khong ban duoc
+	SELECT DISTINCT sp.MASP, TENSP
+	FROM SANPHAM sp
+	WHERE not exists (SELECT *
+						FROM CTHD
+						WHERE CTHD.MASP = sp.MASP
+						)
+
+	-- in ra danh sach (MASP, TENSP) khong ban duoc trong nam 2006
+	SELECT DISTINCT sp.MASP, TENSP
+	FROM SANPHAM sp 
+	WHERE not exists (SELECT *
+					FROM CTHD join HOADON hd on hd.SOHD = CTHD.SOHD
+					WHERE CTHD.MASP = sp.MASP and  YEAR(NGHD) = 2006
+					)
+
+	-- in ra danh sach (MASP, TENSP) do 'Trung Quoc' san xuat va khong ban duoc trong nam 2006
+	SELECT DISTINCT sp.MASP, TENSP
+	FROM SANPHAM sp 
+	WHERE NUOCSX ='Trung Quoc' and not exists (SELECT *
+					FROM CTHD join HOADON hd on hd.SOHD = CTHD.SOHD
+					WHERE CTHD.MASP = sp.MASP and  YEAR(NGHD) = 2006
+					)
+
+	-- tim SOHD da mua tat ca cac san pham do 'Singapore' san xuat
+	-- SOHD khong co SP nao k dc mua
+	SELECT SOHD
+	FROM HOADON hd
+	WHERE not exists ( SELECT *
+						FROM SANPHAM sp
+						WHERE NUOCSX = 'Singapore' and not exists ( SELECT *
+																	FROM CTHD
+																	WHERE CTHD.MASP = sp.MASP and CTHD.SOHD = hd.SOHD
+																	)
+					)
+
+	-- tim SOHD trong nam 2006 da mua it nhat tat ca cac san pham do Singapore san xuat
+	SELECT SOHD
+	FROM HOADON hd
+	WHERE YEAR(NGHD) = 2006 and not exists ( SELECT *
+						FROM SANPHAM sp
+						WHERE NUOCSX = 'Singapore' and not exists ( SELECT *
+																	FROM CTHD
+																	WHERE CTHD.MASP = sp.MASP and CTHD.SOHD = hd.SOHD
+																	)
+					)
+
+	-- Co bao nhieu hoa don khong phai khach hang thanh vien dang ky
+	SELECT count(*) SLHOADON_KHONGCOPHAIKHTV
+	FROM HOADON
+	WHERE MAKH is NULL
+
+	-- co bao nhieu san pham khac nhau duoc ban trong nam 2006
+	SELECT count(distinct MASP) SL_SANPHAM
+	FROM CTHD join HOADON hd on hd.SOHD = CTHD.SOHD
+	WHERE YEAR(NGHD) = 2006
+
+	-- cho biet gia tri hoa don cao nhat va thap nhat
+	SELECT max(TRIGIA) max_TRIGIA, min(TRIGIA) min_TRIGIA
+	FROM HOADON
+
+	-- TRIGIA tb cuat tat ca cac hoa don duoc ban r trong nam 2006
+	SELECT avg(TRIGIA) avg_TRIGIA
+	FROM HOADON
+	WHERE YEAR(NGHD) = 2006
+
+	-- Tinh DOANHTHU ban hang trong nam 2006
+	SELECT sum(TRIGIA) DOANHTHU
+	FROM HOADON
+	WHERE YEAR(NGHD) = 2006
+
+	-- tim hoa don co tri gia cao nhat trong nam 2006
+	SELECT max(TRIGIA) max_TRIGIA, min(TRIGIA) min_TRIGIA
+	FROM HOADON
+	WHERE YEAR(NGHD) = 2006
+
+
+	-- tim ho ten khach hang da mua hoa don co gia tri cao nhat nam 2006
+SELECT kh.MAKH, HOTEN
+FROM KHACHHANG kh join HOADON hd on kh.MAKH = hd.MAKH
+WHERE YEAR(NGHD) = 2006 and TRIGIA =(	SELECT max(TRIGIA)
+										FROM HOADON
+										)
+
+-- in ra danh sach 3 khach hang co doanh so cao nhat
+SELECT MAKH, HOTEN
+FROM KHACHHANG
+WHERE DOANHSO in (	SELECT TOP 3 DOANHSO
+					FROM KHACHHANG
+					order by DOANHSO desc
+					)
+
+-- in ra danh sach MASP, TENSP co gia ban bang 1 trong 3 muc gia cao nhat
+SELECT MASP, TENSP
+FROM SANPHAM sp 
+WHERE GIA in (select distinct top 3  GIA
+				from SANPHAM 
+				order by GIA desc
+				)
+-- in ra danh sach (MASP, TENSP) do 'Thai Lan' san xuat co gia bang 1 trong 3 muc gia cao nhat cua tat ca cac san pham
+SELECT MASP, TENSP
+FROM SANPHAM sp 
+WHERE NUOCSX = 'Thai Lan' and GIA in (select distinct top 3  GIA
+				from SANPHAM 
+				order by GIA desc
+				)
+
+-- in ra danh sach MASP, TENSP do 'Trung Quoc' san xuar co gia bang 1 trog 3 muc gia cao nhat cua cac sp do 'Trung Quoc' san xuat
+SELECT MASP, TENSP
+FROM SANPHAM sp 
+WHERE NUOCSX = 'Trung Quoc' and GIA in (SELECT distinct top 3  GIA
+										FROM SANPHAM 
+										WHERE NUOCSX = 'Trung Quoc'
+										order by GIA desc
+											)
+
+-- in ra danh sach 3 khach hag co doanh so cao nhat( sap xep theo thu hang)
+SELECT *
+FROM KHACHHANG
+WHERE DOANHSO in (select top 3 DOANHSO
+					from KHACHHANG
+					order by DOANHSO desc
+					)
+
+-- tinh tong so sp do 'Trung Quoc' san xuat
+SELECT count(MASP) count_sp_TQ
+FROM SANPHAM
+WHERE NUOCSX = 'Trung Quoc'
+
+-- tinh tong so san pham cua tung nuoc sx
+SELECT NUOCSX, count(MASP) count_sp
+FROM SANPHAM
+GROUP by NUOCSX 
+
+-- voi tung nuoc san xuat, tim gia ban cao nhat , trung binh cua cac san pham
+SELECT NUOCSX, max(Gia) max_Gia, avg(Gia) avg_Gia
+FROM SANPHAM
+GROUP by NUOCSX 
+
+-- tinh doanh thu ban hang moi ngay
+SELECT NGHD, sum(TRIGIA)DOANHTHU
+FROM HOADON
+GROUP by NGHD
+
+-- tinh tong so luong cua tung san pham ban ra trong thang 10/2006
+SELECT MASP, sum(SL) Tong_SL
+FROM CTHD join HOADON hd on CTHD.SOHD = hd.SOHD
+WHERE MONTH(NGHD) = 10 and YEAR(NGHD) = 2006
+GROUP by MASP
+
+-- tim doanh thu ban hang cua tung thang trong nam 2006
+SELECT MONTH(NGHD) THANG, sum(TRIGIA) DOANHTHU
+FROM HOADON
+GROUP by MONTH(NGHD)
+
+-- tim hoa don co mua it nhat 4 sp khac nhau
+SELECT SOHD, count(MASP) COUNT_SP
+FROM CTHD
+GROUP by SOHD
+HAVING count(MASP) >= 4
+
+-- tim hoa don co mua 3 sp do 'Viet Nam' san xuat (3 san pham khac nhau)
+SELECT SOHD 
+FROM CTHD join SANPHAM sp on sp.MASP = CTHD.MASP
+WHERE NUOCSX = 'Viet Nam'
+GROUP by SOHD 
+HAVING count (sp.MASP) = 3
+
+-- tim khach hang (MAKH, HOTEN)  co so lan mua hang nhieu nhat
+SELECT kh.MAKH, HOTEN
+FROM KHACHHANG kh join HOADOn hd on hd.MAKH = kh.MAKH
+GROUP by  kh.MAKH
+
+-- Thang may trong nam 2006, doanh so ban hang cao nhat
+SELECT MONTH(NGHD) THANG, sum(TRIGIA) DOANHTHU
+FROM HOADON
+WHERE YEAR(NGHD) =2006 
+GROUP by MONTH(NGHD)
+HAVING sum(TRIGIA) >= all (SELECT sum(TRIGIA)
+							FROM HOADON
+							WHERE YEAR(NGHD) =2006 
+							GROUP by MONTH(NGHD)
+							)
+
+-- tim san pham MASP, TENSP co tong so luong ban ra thap nhat trong nam 2006
+SELECT sp.MASP, TENSP 
+FROM SANPHAM sp join CTHD cthd on cthd.MASP = sp.MASP join HOADON hd on hd.SOHD = cthd.SOHD
+WHERE YEAR(NGHD) = 2006 
+GROUP by sp.MASP, TENSP 
+HAVING sum(SL) <= all (SELECT sum(SL)
+						FROM CTHD join HOADON on HOADON.SOHD = CTHD.SOHD
+						WHERE YEAR(NGHD) = 2006 
+						GROUP by MASP
+						)
+
+-- Moi nuoc sx tim san pham MASP TENSP co gia ban cao nhat
+SELECT MASP, TENSP
+FROM SANPHAM a
+WHERE GIA >= all (SELECT GIA
+			FROM SANPHAM b
+			WHERE a.NUOCSX = b.NUOCSX
+			)
+GROUP by NUOCSX, MASP, TENSP
+
+-- Tim NUOCSX san xuat it nhat 3 san pham co gia ban khac nhau
+SELECT NUOCSX
+FROM SANPHAM
+GROUP by NUOCSX
+HAVING count(distinct GIA) >= 3
+
+-- trong 10 khach hang co doanh so cao nhat , tim khach hang co so lan mua hag nhieu nhat
+SELECT kh.MAKH, kh.HOTEN
+FROM KHACHHANG kh join ( SELECT top 10 *
+						FROM KHACHHANG
+						ORDER by DOANHSO desc
+						) as j on kh.MAKH = j.MAKH join HOADON hd on hd.MAKH = j.MAKH
+GROUP by kh.MAKH, kh.HOTEN
+HAVING count(SOHD) >= all (SELECT count(SOHD)
+							FROM HOADON hd1 join (SELECT top 10 *
+												FROM KHACHHANG 
+												ORDER by DOANHSO desc
+												) as kh1 on kh1.MAKH = hd1.MAKH
+							GROUP by kh1.MAKH
+							)
